@@ -5,7 +5,7 @@ data class ForecastResponse(
     val daily: List<Daily>,
     val lat: Double,
     val lon: Double,
-    val minutely: List<Minutely>,
+    val minutely: List<Minutely>?,
     val timezone: String,
     val timezone_offset: Int
 )
@@ -39,8 +39,8 @@ data class Daily(
     val moonset: Int,
     val pop: Double,
     val pressure: Int,
-    val rain: Double,
-    val snow: Double,
+    val rain: Double?,
+    val snow: Double?,
     val summary: String,
     val sunrise: Int,
     val sunset: Int,
