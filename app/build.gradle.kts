@@ -91,6 +91,9 @@ dependencies {
 
     implementation(libs.accompanist.permissions)
 
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+
 }
 
 secrets {

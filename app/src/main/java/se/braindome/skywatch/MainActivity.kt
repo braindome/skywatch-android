@@ -21,6 +21,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import se.braindome.skywatch.network.RetrofitInstance
 import se.braindome.skywatch.ui.home.HomeScreen
+import se.braindome.skywatch.ui.home.HomeViewModel
 import se.braindome.skywatch.ui.theme.SkywatchTheme
 import timber.log.Timber
 
@@ -31,6 +32,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val viewModel : HomeViewModel = HomeViewModel()
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
@@ -45,10 +48,14 @@ class MainActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        HomeScreen(innerPadding) {
-                            fetchWeather()
-                            getLocation()
-                        }
+                        HomeScreen(
+                            padding = innerPadding,
+                            onClick = {
+                                fetchWeather()
+                                getLocation()
+                            },
+                            viewModel = viewModel
+                        )
 
                     }
 
@@ -90,7 +97,8 @@ class MainActivity : ComponentActivity() {
                     lat = 33.44,
                     lon = 94.04,
                     exclude = "minutely",
-                    apiKey = key
+                    apiKey = key,
+                    units = "metric"
                 )
                 Timber.d("Forecast: ${response.current.temp}")
             } catch (e: Exception) {

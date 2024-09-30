@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,13 +29,25 @@ import se.braindome.skywatch.ui.home.search.SearchBar
 
 
 @Composable
-fun HomeScreen(padding: PaddingValues, onClick: () -> Unit) {
+fun HomeScreen(
+    padding: PaddingValues,
+    onClick: () -> Unit,
+    viewModel: HomeViewModel
+) {
+    val uiState = viewModel.uiState.collectAsState()
     Column(
         modifier = Modifier.fillMaxSize().padding(padding),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SearchBar()
-        MainInfoCard()
+        MainInfoCard(
+            currentTemp = uiState.value.forecastResponse?.current?.temp
+                .toString() ?: "N/A",
+            currentWeather = uiState.value.forecastResponse?.current?.weather?.get(0)?.description
+                .toString() ?: "N/A",
+            weatherIconUrl = uiState.value.forecastResponse?.current?.weather?.get(0)?.icon
+                .toString() ?: "N/A"
+        )
         Button(onClick = onClick) {
             Text(text = "Log Weather")
         }
@@ -44,5 +57,5 @@ fun HomeScreen(padding: PaddingValues, onClick: () -> Unit) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(PaddingValues(8.dp), {})
+    HomeScreen(PaddingValues(8.dp), {}, HomeViewModel())
 }
