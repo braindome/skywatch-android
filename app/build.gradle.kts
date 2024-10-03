@@ -48,7 +48,7 @@ android {
     }
     packaging {
         resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            excludes += "/META-INF/{AL2.0,LGPL2.1,LICENSE.md,LICENSE-notice.md}"
         }
     }
 }
@@ -93,6 +93,9 @@ dependencies {
 
     implementation(libs.coil)
     implementation(libs.coil.compose)
+
+    testImplementation(libs.mockk)
+    androidTestImplementation(libs.mockk.android)
 
 }
 

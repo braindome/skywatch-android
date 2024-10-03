@@ -2,7 +2,6 @@ package se.braindome.skywatch
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.location.Location
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -14,12 +13,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import se.braindome.skywatch.network.RetrofitInstance
+import se.braindome.skywatch.notification.NotificationHelper
 import se.braindome.skywatch.ui.home.HomeScreen
 import se.braindome.skywatch.ui.home.HomeViewModel
 import se.braindome.skywatch.ui.theme.SkywatchTheme
@@ -29,11 +30,30 @@ private const val LOCATION_PERMISSION_REQUEST_CODE = 1
 
 class MainActivity : ComponentActivity() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var viewModel: HomeViewModel
+    private lateinit var notificationHelper: NotificationHelper
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        notificationHelper = NotificationHelper(this)
+        viewModel = HomeViewModel()
 
-        val viewModel : HomeViewModel = HomeViewModel()
+        // Creating the notification channel
+        notificationHelper.createNotificationChannel()
+
+        // Collecting weather state changes
+        lifecycleScope.launch {
+            viewModel.uiState.collect { state ->
+                if (state.forecastResponse != null) {
+                    val temp = state.forecastResponse.current.temp
+                    val condition = state.forecastResponse.current.weather[0].description
+                    notificationHelper.sendNotification(
+                        title = "Weather Update",
+                        content = "The temperature is $temp and the condition is $condition",
+                    )
+                }
+            }
+        }
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 

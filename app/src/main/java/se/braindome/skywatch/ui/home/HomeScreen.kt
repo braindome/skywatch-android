@@ -42,11 +42,11 @@ fun HomeScreen(
         SearchBar()
         MainInfoCard(
             currentTemp = uiState.value.forecastResponse?.current?.temp
-                .toString() ?: "N/A",
+                .toString(),
             currentWeather = uiState.value.forecastResponse?.current?.weather?.get(0)?.description
-                .toString() ?: "N/A",
+                .toString(),
             weatherIconUrl = uiState.value.forecastResponse?.current?.weather?.get(0)?.icon
-                .toString() ?: "N/A"
+                .toString()
         )
         Button(onClick = onClick) {
             Text(text = "Log Weather")
