@@ -40,14 +40,7 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SearchBar()
-        MainInfoCard(
-            currentTemp = uiState.value.forecastResponse?.current?.temp
-                .toString(),
-            currentWeather = uiState.value.forecastResponse?.current?.weather?.get(0)?.description
-                .toString(),
-            weatherIconUrl = uiState.value.forecastResponse?.current?.weather?.get(0)?.icon
-                .toString()
-        )
+        MainInfoCard(uiState)
         Button(onClick = onClick) {
             Text(text = "Log Weather")
         }
