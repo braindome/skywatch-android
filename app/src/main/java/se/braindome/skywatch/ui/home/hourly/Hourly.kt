@@ -3,6 +3,7 @@ package se.braindome.skywatch.ui.home.hourly
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,26 +38,35 @@ import se.braindome.skywatch.ui.utils.DateTimeUtils
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HourlyColumn(weatherState: State<HomeUiState>) {
+    var isExpanded by rememberSaveable { mutableStateOf(true) }
+
     Column(
         modifier = Modifier.fillMaxWidth().padding()
     ) {
         Row {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_expand_less_24),
+                painter = painterResource(
+                    id = if (isExpanded) R.drawable.baseline_expand_less_24 else R.drawable.baseline_expand_more_24
+                ),
                 contentDescription = null,
-                modifier = Modifier.padding(start = 8.dp).size(34.dp)
+                modifier = Modifier.padding(start = 8.dp)
+                    .size(34.dp).clickable { isExpanded = !isExpanded },
             )
             Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = "Next 24 Hours",
                 style = MaterialTheme.typography.titleLarge,
             )
+
         }
-        LazyColumn(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            items(24) { index -> HourlyItem(weatherState, index) }
+        if (isExpanded) {
+            LazyColumn(
+                modifier = Modifier.padding(16.dp)
+            ) {
+                items(24) { index -> HourlyItem(weatherState, index) }
+            }
         }
+
     }
 
 
@@ -65,7 +76,6 @@ fun HourlyColumn(weatherState: State<HomeUiState>) {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
-    val isExpanded by rememberSaveable { mutableStateOf(true) }
     val hourlyState = weatherState.value.forecastResponse?.hourly?.get(index)
     Row(
         modifier = Modifier
