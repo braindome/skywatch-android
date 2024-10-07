@@ -5,6 +5,7 @@ data class ForecastResponse(
     val daily: List<Daily>,
     val lat: Double,
     val lon: Double,
+    val hourly: List<Hourly>?,
     val minutely: List<Minutely>?,
     val timezone: String,
     val timezone_offset: Int
@@ -46,6 +47,23 @@ data class Daily(
     val sunset: Int,
     val temp: Temp,
     val uvi: Double,
+    val weather: List<Weather>,
+    val wind_deg: Int,
+    val wind_gust: Double,
+    val wind_speed: Double
+)
+
+data class Hourly(
+    val clouds: Int,
+    val dew_point: Double,
+    val dt: Int,
+    val feels_like: Double,
+    val humidity: Int,
+    val pop: Double,
+    val pressure: Int,
+    val temp: Double,
+    val uvi: Double,
+    val visibility: Int?,
     val weather: List<Weather>,
     val wind_deg: Int,
     val wind_gust: Double,
@@ -128,5 +146,7 @@ val mockForecastResponse = ForecastResponse(
     lon = 11.96,
     minutely = null,
     timezone = "Europe/Stockholm",
-    timezone_offset = 7200
+    timezone_offset = 7200,
+    hourly = null
+
 )

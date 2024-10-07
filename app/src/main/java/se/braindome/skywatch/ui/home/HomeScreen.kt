@@ -1,5 +1,6 @@
 package se.braindome.skywatch.ui.home
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,9 +26,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import se.braindome.skywatch.ui.home.cards.MainInfoCard
+import se.braindome.skywatch.ui.home.hourly.HourlyColumn
 import se.braindome.skywatch.ui.home.search.SearchBar
 
 
+@SuppressLint("NewApi")
 @Composable
 fun HomeScreen(
     padding: PaddingValues,
@@ -41,6 +44,7 @@ fun HomeScreen(
     ) {
         SearchBar()
         MainInfoCard(uiState)
+        HourlyColumn(uiState)
         Button(onClick = onClick) {
             Text(text = "Log Weather")
         }
