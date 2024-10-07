@@ -27,9 +27,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import se.braindome.skywatch.R
 import se.braindome.skywatch.ui.home.HomeUiState
 import se.braindome.skywatch.ui.home.HomeViewModel
@@ -41,7 +43,7 @@ fun HourlyColumn(weatherState: State<HomeUiState>) {
     var isExpanded by rememberSaveable { mutableStateOf(true) }
 
     Column(
-        modifier = Modifier.fillMaxWidth().padding()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Row {
             Icon(
@@ -61,7 +63,7 @@ fun HourlyColumn(weatherState: State<HomeUiState>) {
         }
         if (isExpanded) {
             LazyColumn(
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(2.dp)
             ) {
                 items(24) { index -> HourlyItem(weatherState, index) }
             }
@@ -77,21 +79,25 @@ fun HourlyColumn(weatherState: State<HomeUiState>) {
 @Composable
 fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
     val hourlyState = weatherState.value.forecastResponse?.hourly?.get(index)
+    val imageBaseUrl = "https://openweathermap.org/img/wn/"
+    val weatherIcon = hourlyState?.weather?.get(0)?.icon
+
     Row(
         modifier = Modifier
-            .padding(8.dp)
+            .padding(vertical = 4.dp)
             .border(1.dp, Color.Black, RoundedCornerShape(15.dp))
             .fillMaxWidth()
-            .height(48.dp),
+            .height(56.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.wi_cloud),
-            contentDescription = null,
-            modifier = Modifier.padding(start = 8.dp)
+        AsyncImage(
+            model = "$imageBaseUrl$weatherIcon@4x.png",
+            contentDescription = "Weather Icon",
+            modifier = Modifier.size(60.dp),
+            contentScale = ContentScale.Crop
         )
         Spacer(modifier = Modifier.width(32.dp))
-        Column {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = DateTimeUtils.convertToLocalTime(
                     dt = hourlyState?.dt ?: 0,
@@ -100,14 +106,19 @@ fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
                 style = MaterialTheme.typography.labelLarge
             )
             Text(
-                text = hourlyState?.weather?.get(0)?.description.toString()
+                text = hourlyState?.weather?.get(0)?.description.toString(),
+                style = MaterialTheme.typography.labelMedium
             )
         }
         Spacer(modifier = Modifier.width(64.dp))
-        Column {
+        Column(
+            horizontalAlignment = Alignment.End,
+            modifier = Modifier.weight(1f)
+        ) {
             Text(text = hourlyState?.temp.toString() + " C", style = MaterialTheme.typography.labelLarge)
-            Text(text = hourlyState?.feels_like.toString() + " C")
+            Text(text = "Feels like " + hourlyState?.feels_like.toString() + " C", style = MaterialTheme.typography.labelMedium)
         }
+        Spacer(modifier = Modifier.width(24.dp))
     }
 }
 

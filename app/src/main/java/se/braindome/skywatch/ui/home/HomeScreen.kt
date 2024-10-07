@@ -39,7 +39,7 @@ fun HomeScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
     Column(
-        modifier = Modifier.fillMaxSize().padding(padding),
+        modifier = Modifier.fillMaxSize().padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SearchBar()
@@ -54,5 +54,5 @@ fun HomeScreen(
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(PaddingValues(8.dp), {}, HomeViewModel())
+    HomeScreen(PaddingValues(1.dp), {}, HomeViewModel())
 }
