@@ -10,8 +10,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import se.braindome.skywatch.R
+import javax.inject.Inject
 
-class NotificationHelper(private val context: Context) {
+class NotificationHelper @Inject constructor(private val context: Context) {
 
     companion object {
         const val CHANNEL_ID = "weather_updates"
