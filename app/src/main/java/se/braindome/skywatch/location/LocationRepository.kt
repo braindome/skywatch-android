@@ -8,6 +8,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import se.braindome.skywatch.LOCATION_PERMISSION_REQUEST_CODE
 import se.braindome.skywatch.MainActivity
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -34,11 +35,16 @@ class LocationRepository @Inject constructor(
             )
             return
         }
-        val location = fusedLocationClient.lastLocation
-        location.addOnSuccessListener { location ->
+
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
+                Timber.d("Location: ${location.latitude}, ${location.longitude}")
                 onSuccess(location.latitude, location.longitude)
+            } else {
+                Timber.e("Location is null")
             }
+        }.addOnFailureListener { exception ->
+            Timber.e(exception, "Failed to get location")
         }
     }
 }

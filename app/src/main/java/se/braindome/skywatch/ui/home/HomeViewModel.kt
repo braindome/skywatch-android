@@ -40,16 +40,17 @@ class HomeViewModel @Inject constructor(
     var uiState = _uiState.asStateFlow()
 
     init {
-        fetchWeather()
+        //fetchWeather()
+        //updateLocation(MainActivity())
     }
 
-    private fun fetchWeather() {
+    private fun fetchWeather(lat: Double, lon: Double) {
         val key = BuildConfig.OPEN_WEATHER_MAP_API_KEY
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val response = RetrofitInstance.api.getForecast(
-                    lat = 57.70,
-                    lon = 11.96,
+                    lat = lat,
+                    lon = lon,
                     exclude = "minutely",
                     apiKey = key,
                     units = Units.METRIC
@@ -66,36 +67,7 @@ class HomeViewModel @Inject constructor(
     fun updateLocation(activity: MainActivity) {
         locationRepository.getLastLocation(activity) { latitude, longitude ->
             Timber.d("Location: $latitude, $longitude")
-
+            fetchWeather(latitude, longitude)
         }
     }
-
-    /*
-
-    fun getLocation(context: Context) {
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                context as MainActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-            return
-        }
-
-        val location = locationClient.lastLocation
-        location.addOnSuccessListener {
-            if (it != null) {
-                Timber.d("Location: ${it.latitude}, ${it.longitude}")
-            }
-        }
-    }
-
-     */
 }

@@ -117,8 +117,8 @@ fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
             horizontalAlignment = Alignment.End,
             modifier = Modifier.weight(1f)
         ) {
-            Text(text = hourlyState?.temp.toString() + " C", style = MaterialTheme.typography.labelLarge)
-            Text(text = "Feels like " + hourlyState?.feels_like.toString() + " C", style = MaterialTheme.typography.labelMedium)
+            Text(text = hourlyState?.temp?.toInt().toString() + " \u00B0C", style = MaterialTheme.typography.labelLarge)
+            Text(text = "Feels like " + hourlyState?.feels_like?.toInt().toString() + " \u00B0C", style = MaterialTheme.typography.labelMedium)
         }
         Spacer(modifier = Modifier.width(24.dp))
     }
