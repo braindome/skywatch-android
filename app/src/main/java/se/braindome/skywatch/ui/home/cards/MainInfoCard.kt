@@ -59,14 +59,12 @@ fun MainInfoCard(
                     modifier = Modifier.weight(0.5f)
                 ) {
                     Text(
-                        text = weatherState.value.forecastResponse?.current?.temp.toString(),
+                        text = weatherState.value.forecastResponse?.current?.temp?.toInt().toString() + " \u00B0C",
                         style = Typography.displayLarge,
-                        //modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Text(
                         text = weatherState.value.forecastResponse?.current?.weather?.get(0)?.description.toString(),
                         style = Typography.headlineLarge,
-                        //modifier = Modifier.padding(bottom = 8.dp)
                     )
                 }
                 AsyncImage(
