@@ -3,7 +3,9 @@ package se.braindome.skywatch.location
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import androidx.core.app.ActivityCompat
+import androidx.core.location.LocationManagerCompat.isLocationEnabled
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import se.braindome.skywatch.LOCATION_PERMISSION_REQUEST_CODE
@@ -36,9 +38,16 @@ class LocationRepository @Inject constructor(
             return
         }
 
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (!isLocationEnabled(locationManager)) {
+            Timber.e("Location services are disabled")
+            return
+        }
+
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
-                Timber.d("Location: ${location.latitude}, ${location.longitude}")
+                Timber.tag("Timber").d("Location: ${location.latitude}, ${location.longitude}")
                 onSuccess(location.latitude, location.longitude)
             } else {
                 Timber.e("Location is null")
