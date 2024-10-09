@@ -7,14 +7,21 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -80,25 +87,31 @@ class MainActivity : ComponentActivity() {
         //enableEdgeToEdge()
         setContent {
             SkywatchTheme {
-                Scaffold(
+                val uiState = viewModel.uiState.collectAsState()
 
-                ) { innerPadding ->
-                    Column(
-                        modifier = Modifier.fillMaxSize(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        HomeScreen(
-                            padding = innerPadding,
-                            onClick = {
-                               checkLocationPermission()
-                            },
-                            viewModel = viewModel
-                        )
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Scaffold { innerPadding ->
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
+                            verticalArrangement = Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            HomeScreen(
+                                padding = innerPadding,
+                                onClick = {
+                                    checkLocationPermission()
+                                },
+                                viewModel = viewModel
+                            )
+
+                        }
 
                     }
-
                 }
+
+                LoadingOverlay(isLoading = uiState.value.loading)
+
+
             }
         }
 
@@ -122,3 +135,16 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@Composable
+fun LoadingOverlay(isLoading: Boolean) {
+    if (isLoading) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.5f))
+        ) {
+            CircularProgressIndicator(color = Color.White)
+        }
+    }
+}

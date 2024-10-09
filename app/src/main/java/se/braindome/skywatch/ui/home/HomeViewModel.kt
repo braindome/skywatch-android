@@ -65,6 +65,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun updateLocation(activity: MainActivity) {
+        _uiState.value = HomeUiState(null, true)
         locationRepository.getLastLocation(activity) { latitude, longitude ->
             Timber.d("Location: $latitude, $longitude")
             fetchWeather(latitude, longitude)
