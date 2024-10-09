@@ -1,5 +1,6 @@
 package se.braindome.skywatch.ui.home.cards
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,8 +18,10 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -48,11 +51,14 @@ fun MainInfoCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(230.dp)
-            .border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
+            //.border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
+            .background(Color.Black, shape = RoundedCornerShape(15.dp))
             .padding(horizontal = 16.dp),
         ) {
         Column(
-            modifier = Modifier.padding(0.dp),
+            modifier = Modifier
+                .padding(0.dp)
+                .background(Color.Black),
         ) {
             Row {
                 Column(
@@ -61,17 +67,20 @@ fun MainInfoCard(
                     Text(
                         text = weatherState.value.forecastResponse?.current?.temp?.toInt().toString() + " \u00B0C",
                         style = Typography.displayLarge,
+                        color = Color.White,
                     )
                     Text(
                         text = weatherState.value.forecastResponse?.current?.weather?.get(0)?.description.toString(),
                         style = Typography.headlineLarge,
+                        color = Color.White,
                     )
                 }
                 AsyncImage(
                     model = "$imageBaseUrl$weatherIconUrl@4x.png",
                     contentDescription = "Weather Icon",
                     modifier = Modifier.size(150.dp),
-                    contentScale = ContentScale.Crop
+                    contentScale = ContentScale.Crop,
+                    colorFilter = ColorFilter.tint(Color.White)
                 )
             }
             Row(
@@ -115,9 +124,10 @@ fun RowItem(
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = null,
+            tint = Color.White,
         )
-        Text(primaryText)
-        Text(secondaryText)
+        Text(primaryText, color = Color.White)
+        Text(secondaryText, color = Color.White)
     }
 }
 

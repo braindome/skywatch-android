@@ -77,7 +77,7 @@ class MainActivity : ComponentActivity() {
         }
 
 
-        enableEdgeToEdge()
+        //enableEdgeToEdge()
         setContent {
             SkywatchTheme {
                 Scaffold(

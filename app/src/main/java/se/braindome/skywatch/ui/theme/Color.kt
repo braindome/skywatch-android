@@ -25,3 +25,8 @@ val LightBlue20 = Color(0xFF80D8FF)
 val Blue10 = Color(0xFF2979FF)
 val BlueGrey10 = Color(0xFF5C6BC0)
 val LightBlue10 = Color(0xFF40C4FF)
+
+val nightBackground = Color(0xFF0D0D0D)
+val clearBackground = Color(0xFFFFA500)
+val rainyBackground = Color(0xFF4A90E2)
+val cloudyBackground = Color(0xFF708090)
