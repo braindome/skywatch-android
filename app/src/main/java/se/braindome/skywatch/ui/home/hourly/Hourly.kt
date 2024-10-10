@@ -99,7 +99,7 @@ fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
     val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true)
 
     // Log converted times
-    Timber.tag("ConvertedTimes").d("Converted Sunrise: $localSunrise, Converted Sunset: $localSunset")
+    //Timber.tag("ConvertedTimes").d("Converted Sunrise: $localSunrise, Converted Sunset: $localSunset")
     val backgroundColor = getBackgroundColor(
         localTimeString = localTime,
         sunriseString = localSunrise,

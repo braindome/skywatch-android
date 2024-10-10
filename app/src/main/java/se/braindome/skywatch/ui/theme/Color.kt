@@ -3,6 +3,7 @@ package se.braindome.skywatch.ui.theme
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
+import timber.log.Timber
 import java.time.LocalTime
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -45,7 +46,16 @@ fun getBackgroundColor(
     val localTime = LocalTime.parse(localTimeString)
     val sunrise = LocalTime.parse(sunriseString)
     val sunset = LocalTime.parse(sunsetString)
-    val isDayTime = localTime.isAfter(sunrise) && localTime.isBefore(sunset)
+
+    Timber.tag("getBackgroundColor").d("Parsed localTime: $localTime, sunrise: $sunrise, sunset: $sunset")
+
+    val isDayTime = if (sunset.isBefore(sunrise)) {
+        localTime.isAfter(sunrise) || localTime.isBefore(sunset)
+    } else {
+        localTime.isAfter(sunrise) && localTime.isBefore(sunset)
+    }
+
+    Timber.tag("getBackgroundColor").d("localTime: $localTime, sunrise: $sunrise, sunset: $sunset, isDayTime: $isDayTime")
 
     return when {
         weatherCondition == "clear sky" && isDayTime -> clearBackground
