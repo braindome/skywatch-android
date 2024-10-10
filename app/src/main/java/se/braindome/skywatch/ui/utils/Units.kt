@@ -1,7 +1,7 @@
 package se.braindome.skywatch.ui.utils
 
 data object Units {
-    val METRIC = "metric"
-    val IMPERIAL = "imperial"
-    val STANDARD = "standard"
+    const val METRIC = "metric"
+    const val IMPERIAL = "imperial"
+    const val STANDARD = "standard"
 }

@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.internal.Contexts.getApplication
@@ -46,7 +47,7 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchWeather(lat: Double, lon: Double) {
         val key = BuildConfig.OPEN_WEATHER_MAP_API_KEY
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.getForecast(
                     lat = lat,
