@@ -1,7 +1,8 @@
 package se.braindome.skywatch.ui.home.cards
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,50 +16,59 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import se.braindome.skywatch.R
 import se.braindome.skywatch.ui.home.HomeUiState
 import se.braindome.skywatch.ui.theme.Typography
+import se.braindome.skywatch.ui.theme.getBackgroundColor
+import se.braindome.skywatch.ui.utils.DateTimeUtils
+import se.braindome.skywatch.ui.utils.IconResourceProvider
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainInfoCard(
     weatherState: State<HomeUiState>,
 ) {
-    val windDeg = weatherState.value.forecastResponse?.current?.wind_deg ?: 0.0
-    val windIcon = when (windDeg) {
-        in 337..360, in 0..22 -> R.drawable.wi_direction_up
-        in 22..67 -> R.drawable.wi_direction_up_right
-        in 67..112 -> R.drawable.wi_direction_right
-        in 112..157 -> R.drawable.wi_direction_down_right
-        in 157..202 -> R.drawable.wi_direction_down
-        in 202..247 -> R.drawable.wi_direction_down_left
-        in 247..292 -> R.drawable.wi_direction_left
-        in 292..337 -> R.drawable.wi_direction_up_left
-        else -> R.drawable.wi_direction_up // Default case
-    }
-    val imageBaseUrl = "https://openweathermap.org/img/wn/"
+    val windDeg = weatherState.value.forecastResponse?.current?.wind_deg?.toDouble() ?: 0.0
+    val windIcon = IconResourceProvider.getWindIcon(windDeg)
+
+    val sunset = weatherState.value.forecastResponse?.daily?.get(0)?.sunset
+    val sunrise = weatherState.value.forecastResponse?.daily?.get(0)?.sunrise
+    val localTime = DateTimeUtils.convertToLocalTime(
+        weatherState.value.forecastResponse?.current?.dt ?: 0, true
+    )
+
+
+    val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true)
+    val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true)
+
+    val backgroundColor = getBackgroundColor(
+        localTimeString = localTime,
+        sunriseString = localSunrise,
+        sunsetString = localSunset,
+        weatherCondition = weatherState.value.forecastResponse?.current?.weather?.get(0)?.description
+    )
+
     val weatherIconUrl = weatherState.value.forecastResponse?.current?.weather?.get(0)?.icon
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .height(230.dp)
             //.border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
-            .background(Color.Black, shape = RoundedCornerShape(15.dp))
+            .background(backgroundColor, shape = RoundedCornerShape(10.dp))
             .padding(horizontal = 16.dp),
         ) {
         Column(
             modifier = Modifier
                 .padding(0.dp)
-                .background(Color.Black),
+                .background(backgroundColor),
         ) {
             Row {
                 Column(
@@ -75,13 +85,13 @@ fun MainInfoCard(
                         color = Color.White,
                     )
                 }
-                AsyncImage(
-                    model = "$imageBaseUrl$weatherIconUrl@4x.png",
-                    contentDescription = "Weather Icon",
-                    modifier = Modifier.size(150.dp),
-                    contentScale = ContentScale.Crop,
-                    colorFilter = ColorFilter.tint(Color.White)
+                Icon(
+                    painter = painterResource(id = IconResourceProvider.assignIcon(weatherIconUrl.toString())),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(150.dp)
                 )
+
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -131,8 +141,9 @@ fun RowItem(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun MainInfoCardPreview() {
-    //MainInfoCard("35C", "Sunny", "01d")
+    MainInfoCard(weatherState = remember { mutableStateOf(HomeUiState(forecastResponse = null, loading = false))})
 }

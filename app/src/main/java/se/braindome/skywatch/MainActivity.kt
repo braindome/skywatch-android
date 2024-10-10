@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -90,14 +91,17 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            SkywatchTheme {
+            SkywatchTheme(darkTheme = true) {
                 val uiState = viewModel.uiState.collectAsState()
 
                 Box(
                     modifier = Modifier.fillMaxSize()
                         .padding(WindowInsets.systemBars.asPaddingValues())
+                        .background(Color.Black)
                 ) {
-                    Scaffold { innerPadding ->
+                    Scaffold(
+                        modifier = Modifier.background(Color.Black).padding(8.dp)
+                    ) { innerPadding ->
                         Column(
                             modifier = Modifier.fillMaxSize(),
                             verticalArrangement = Arrangement.Center,

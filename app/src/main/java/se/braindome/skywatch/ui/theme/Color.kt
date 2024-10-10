@@ -1,6 +1,9 @@
 package se.braindome.skywatch.ui.theme
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.graphics.Color
+import java.time.LocalTime
 
 val Purple80 = Color(0xFFD0BCFF)
 val PurpleGrey80 = Color(0xFFCCC2DC)
@@ -26,7 +29,29 @@ val Blue10 = Color(0xFF2979FF)
 val BlueGrey10 = Color(0xFF5C6BC0)
 val LightBlue10 = Color(0xFF40C4FF)
 
-val nightBackground = Color(0xFF0D0D0D)
+val nightBackground = Color(0xFF000080)
 val clearBackground = Color(0xFFFFA500)
 val rainyBackground = Color(0xFF4A90E2)
 val cloudyBackground = Color(0xFF708090)
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun getBackgroundColor(
+    localTimeString: String,
+    sunriseString: String,
+    sunsetString: String,
+    weatherCondition: String?
+): Color {
+    val localTime = LocalTime.parse(localTimeString)
+    val sunrise = LocalTime.parse(sunriseString)
+    val sunset = LocalTime.parse(sunsetString)
+    val isDayTime = localTime.isAfter(sunrise) && localTime.isBefore(sunset)
+
+    return when {
+        weatherCondition == "clear sky" && isDayTime -> clearBackground
+        weatherCondition == "clear sky" && !isDayTime -> nightBackground
+        weatherCondition in listOf("rain", "snow", "shower rain", "thunderstorm", "light rain") -> rainyBackground
+        weatherCondition in listOf("few clouds", "scattered clouds", "broken clouds", "overcast clouds") -> cloudyBackground
+        else -> Color.LightGray
+    }
+}
