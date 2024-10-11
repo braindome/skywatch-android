@@ -81,12 +81,12 @@ fun MainInfoCard(
                     )
                     Text(
                         text = weatherState.value.forecastResponse?.current?.temp?.toInt().toString() + " \u00B0C",
-                        style = Typography.displayLarge,
+                        style = Typography.headlineLarge,
                         color = Color.White,
                     )
                     Text(
                         text = weatherState.value.forecastResponse?.current?.weather?.get(0)?.description.toString(),
-                        style = Typography.headlineLarge,
+                        style = Typography.headlineSmall,
                         color = Color.White,
                     )
                 }

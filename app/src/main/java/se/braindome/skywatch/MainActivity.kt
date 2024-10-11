@@ -23,18 +23,17 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import se.braindome.skywatch.location.LocationRepository
-import se.braindome.skywatch.network.RetrofitInstance
 import se.braindome.skywatch.notification.NotificationHelper
 import se.braindome.skywatch.ui.home.HomeScreen
 import se.braindome.skywatch.ui.home.HomeViewModel
@@ -68,6 +67,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //enableEdgeToEdge()
+
         notificationHelper = NotificationHelper(this)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
@@ -88,10 +89,14 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
+        //windowInsetsController.isAppearanceLightStatusBars = false // Adjust based on your theme
+        window.statusBarColor = Color.Transparent.toArgb() // Set your desired color
+        window.navigationBarColor = Color.Black.toArgb() // Set your desired color
 
-        enableEdgeToEdge()
         setContent {
-            SkywatchTheme(darkTheme = true) {
+            SkywatchTheme {
                 val uiState = viewModel.uiState.collectAsState()
 
                 Box(
@@ -100,15 +105,14 @@ class MainActivity : ComponentActivity() {
                         .background(Color.Black)
                 ) {
                     Scaffold(
-                        modifier = Modifier.background(Color.Black).padding(8.dp)
+                        modifier = Modifier.background(Color.Black).padding(horizontal = 8.dp)
                     ) { innerPadding ->
                         Column(
-                            modifier = Modifier.fillMaxSize(),
+                            modifier = Modifier.fillMaxSize().background(Color.Black).padding(innerPadding),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             HomeScreen(
-                                padding = innerPadding,
                                 onClick = {
                                     checkLocationPermission()
                                 },
@@ -119,10 +123,7 @@ class MainActivity : ComponentActivity() {
 
                     }
                 }
-
                 LoadingOverlay(isLoading = uiState.value.loading)
-
-
             }
         }
 
