@@ -75,6 +75,11 @@ fun MainInfoCard(
                     modifier = Modifier.weight(0.5f)
                 ) {
                     Text(
+                        text = weatherState.value.location.toString(),
+                        style = Typography.headlineLarge,
+                        color = Color.White,
+                    )
+                    Text(
                         text = weatherState.value.forecastResponse?.current?.temp?.toInt().toString() + " \u00B0C",
                         style = Typography.displayLarge,
                         color = Color.White,

@@ -3,6 +3,7 @@ package se.braindome.skywatch.location
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.LocationManager
 import androidx.core.app.ActivityCompat
 import androidx.core.location.LocationManagerCompat.isLocationEnabled
@@ -11,6 +12,7 @@ import com.google.android.gms.location.LocationServices
 import se.braindome.skywatch.LOCATION_PERMISSION_REQUEST_CODE
 import se.braindome.skywatch.MainActivity
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +23,7 @@ class LocationRepository @Inject constructor(
 
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
 
-    fun getLastLocation(activity: MainActivity, onSuccess: (latitude: Double, longitude: Double) -> Unit) {
+    fun getLastLocation(activity: MainActivity, onSuccess: (latitude: Double, longitude: Double, locationName: String) -> Unit) {
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -47,8 +49,15 @@ class LocationRepository @Inject constructor(
 
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
             if (location != null) {
-                Timber.tag("Timber").d("Location: ${location.latitude}, ${location.longitude}")
-                onSuccess(location.latitude, location.longitude)
+                val geocoder = Geocoder(context, Locale.getDefault())
+                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+                val locationName = if (addresses?.isNotEmpty() ?: false) {
+                    addresses.get(0)?.locality ?: addresses[0]?.subLocality ?: "Unknown location"
+                } else {
+                    "Unknown location"
+                }
+                Timber.tag("LocationRepository").d("Location: ${location.latitude}, ${location.longitude}, $locationName")
+                onSuccess(location.latitude, location.longitude, locationName.toString())
             } else {
                 Timber.e("Location is null")
             }

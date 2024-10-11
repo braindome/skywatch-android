@@ -30,6 +30,7 @@ import javax.inject.Inject
 data class HomeUiState(
     val forecastResponse: ForecastResponse?,
     val loading: Boolean = false,
+    val location: String? = "Unknown location"
 )
 
 @HiltViewModel
@@ -45,7 +46,7 @@ class HomeViewModel @Inject constructor(
         //updateLocation(MainActivity())
     }
 
-    private fun fetchWeather(lat: Double, lon: Double) {
+    private fun fetchWeather(lat: Double, lon: Double, location: String) {
         val key = BuildConfig.OPEN_WEATHER_MAP_API_KEY
         viewModelScope.launch {
             try {
@@ -57,7 +58,7 @@ class HomeViewModel @Inject constructor(
                     units = Units.METRIC
                 )
                 Timber.d("Forecast: ${response.current.temp}")
-                _uiState.value = HomeUiState(response, false)
+                _uiState.value = HomeUiState(response, false, location)
             } catch (e: Exception) {
                 Timber.e(e,"Failed to fetch forecast")
                 _uiState.value = HomeUiState(null, false)
@@ -67,9 +68,9 @@ class HomeViewModel @Inject constructor(
 
     fun updateLocation(activity: MainActivity) {
         _uiState.value = HomeUiState(null, true)
-        locationRepository.getLastLocation(activity) { latitude, longitude ->
-            Timber.d("Location: $latitude, $longitude")
-            fetchWeather(latitude, longitude)
+        locationRepository.getLastLocation(activity) { latitude, longitude, locationName ->
+            Timber.d("Location: $latitude, $longitude, $locationName")
+            fetchWeather(latitude, longitude, locationName)
         }
     }
 }
