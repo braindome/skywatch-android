@@ -61,9 +61,8 @@ fun MainInfoCard(
         modifier = Modifier
             .fillMaxWidth()
             .height(230.dp)
-            //.border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
             .background(backgroundColor, shape = RoundedCornerShape(10.dp))
-            .padding(16.dp),
+            .padding(10.dp),
         ) {
         Column(
             modifier = Modifier

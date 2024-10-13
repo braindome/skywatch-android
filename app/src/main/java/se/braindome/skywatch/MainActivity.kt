@@ -66,8 +66,9 @@ class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
-        //enableEdgeToEdge()
 
         notificationHelper = NotificationHelper(this)
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
@@ -88,12 +89,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-        val windowInsetsController = WindowInsetsControllerCompat(window, window.decorView)
-        //windowInsetsController.isAppearanceLightStatusBars = false // Adjust based on your theme
-        window.statusBarColor = Color.Transparent.toArgb() // Set your desired color
-        window.navigationBarColor = Color.Black.toArgb() // Set your desired color
 
         setContent {
             SkywatchTheme {
@@ -128,6 +123,13 @@ class MainActivity : ComponentActivity() {
         }
 
         checkLocationPermission()
+
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, window.decorView).apply {
+            isAppearanceLightStatusBars = false
+            isAppearanceLightNavigationBars = false
+            window.decorView.setBackgroundColor(Color.Black.toArgb())
+        }
     }
 
     private fun checkLocationPermission() {

@@ -25,3 +25,13 @@ object DateTimeUtils {
     }
 
 }
+
+fun getUviDefinition(uvi: Double): String {
+    return when (uvi) {
+        in 0.0..2.0 -> "Low"
+        in 3.0..5.0 -> "Moderate"
+        in 6.0..7.0 -> "High"
+        in 8.0..10.0 -> "Very High"
+        else -> "Extreme"
+    }
+}
