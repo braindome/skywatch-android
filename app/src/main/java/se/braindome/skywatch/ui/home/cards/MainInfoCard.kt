@@ -63,7 +63,7 @@ fun MainInfoCard(
             .height(230.dp)
             //.border(width = 1.dp, color = Color.Black, shape = RoundedCornerShape(15.dp))
             .background(backgroundColor, shape = RoundedCornerShape(10.dp))
-            .padding(horizontal = 16.dp),
+            .padding(16.dp),
         ) {
         Column(
             modifier = Modifier
@@ -76,17 +76,17 @@ fun MainInfoCard(
                 ) {
                     Text(
                         text = weatherState.value.location.toString(),
-                        style = Typography.headlineLarge,
+                        style = Typography.headlineMedium,
                         color = Color.White,
                     )
                     Text(
                         text = weatherState.value.forecastResponse?.current?.temp?.toInt().toString() + " \u00B0C",
-                        style = Typography.headlineLarge,
+                        style = Typography.headlineMedium,
                         color = Color.White,
                     )
                     Text(
                         text = weatherState.value.forecastResponse?.current?.weather?.get(0)?.description.toString(),
-                        style = Typography.headlineSmall,
+                        style = Typography.bodyLarge,
                         color = Color.White,
                     )
                 }
@@ -142,7 +142,7 @@ fun RowItem(
             tint = Color.White,
         )
         Text(primaryText, color = Color.White)
-        Text(secondaryText, color = Color.White)
+        //Text(secondaryText, color = Color.White)
     }
 }
 
