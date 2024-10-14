@@ -5,7 +5,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.http.GET
@@ -19,11 +18,19 @@ interface WeatherApiService {
     suspend fun getForecast(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Query("exclude") exclude: String,
+        @Query("exclude") exclude: String?,
         @Query("appid") apiKey: String,
         @Query("units") units : String
 
     ) : ForecastResponse
+
+    @GET("geo/1.0/reverse")
+    suspend fun getLocationName(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("limit") limit: Int,
+        @Query("appid") apiKey: String
+    ) : List<GeocodingResponseItem>
 }
 
 object RetrofitInstance {

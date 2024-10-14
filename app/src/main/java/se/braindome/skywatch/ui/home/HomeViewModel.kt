@@ -1,24 +1,14 @@
 package se.braindome.skywatch.ui.home
 
-import android.Manifest
-import android.app.Application
-import android.content.Context
-import android.content.pm.PackageManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.core.app.ActivityCompat
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import dagger.hilt.android.internal.Contexts.getApplication
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import se.braindome.skywatch.BuildConfig
-import se.braindome.skywatch.LOCATION_PERMISSION_REQUEST_CODE
 import se.braindome.skywatch.MainActivity
 import se.braindome.skywatch.location.LocationRepository
 import se.braindome.skywatch.network.ForecastResponse
@@ -53,12 +43,19 @@ class HomeViewModel @Inject constructor(
                 val response = RetrofitInstance.api.getForecast(
                     lat = lat,
                     lon = lon,
-                    exclude = "minutely",
+                    exclude = null,
                     apiKey = key,
                     units = Units.METRIC
                 )
-                Timber.d("Forecast: ${response.current.temp}")
-                _uiState.value = HomeUiState(response, false, location)
+                val geocodingResponse = RetrofitInstance.api.getLocationName(
+                    lat = lat,
+                    lon = lon,
+                    limit = 1,
+                    apiKey = key
+                )
+                Timber.tag("ApiGeocoder").d("Forecast: ${response.current.temp}")
+                Timber.tag("ApiGeocoder").d("Geocoding response: ${geocodingResponse[0].name}.")
+                _uiState.value = HomeUiState(response, false, geocodingResponse[0].name)
             } catch (e: Exception) {
                 Timber.e(e,"Failed to fetch forecast")
                 _uiState.value = HomeUiState(null, false)
@@ -66,6 +63,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun updateLocation(activity: MainActivity) {
         _uiState.value = HomeUiState(null, true)
         locationRepository.getLastLocation(activity) { latitude, longitude, locationName ->

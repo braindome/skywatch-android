@@ -43,7 +43,7 @@ fun getBackgroundColor(
     sunsetString: String,
     weatherCondition: String?
 ): Color {
-    val localTime = LocalTime.parse(localTimeString)
+    val localTime = LocalTime.parse(localTimeString.split(",")[0].trim())
     val sunrise = LocalTime.parse(sunriseString)
     val sunset = LocalTime.parse(sunsetString)
 

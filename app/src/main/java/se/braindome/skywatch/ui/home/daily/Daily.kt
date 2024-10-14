@@ -106,7 +106,7 @@ fun DailyItem(weatherState: State<HomeUiState>, index: Int) {
                 text = DateTimeUtils.convertToLocalTime(
                     dt = dailyState?.dt ?: 0,
                     format24 = true
-                ),
+                ).toString(),
                 style = MaterialTheme.typography.labelLarge,
                 color = Color.White
             )

@@ -43,11 +43,11 @@ fun MainInfoCard(
     val sunrise = weatherState.value.forecastResponse?.daily?.get(0)?.sunrise
     val localTime = DateTimeUtils.convertToLocalTime(
         weatherState.value.forecastResponse?.current?.dt ?: 0, true
-    )
+    ).first
 
 
-    val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true)
-    val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true)
+    val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true).first
+    val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true).first
 
     val backgroundColor = getBackgroundColor(
         localTimeString = localTime,
