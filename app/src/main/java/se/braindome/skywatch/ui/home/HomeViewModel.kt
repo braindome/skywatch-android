@@ -5,9 +5,12 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import se.braindome.skywatch.BuildConfig
 import se.braindome.skywatch.MainActivity
 import se.braindome.skywatch.location.LocationRepository
@@ -28,6 +31,7 @@ class HomeViewModel @Inject constructor(
     private val locationRepository: LocationRepository
 ) : ViewModel() {
 
+    private val key = BuildConfig.OPEN_WEATHER_MAP_API_KEY
     private val _uiState = MutableStateFlow(HomeUiState(null, true))
     var uiState = _uiState.asStateFlow()
 
@@ -37,30 +41,45 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fetchWeather(lat: Double, lon: Double, location: String) {
-        val key = BuildConfig.OPEN_WEATHER_MAP_API_KEY
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
-                val response = RetrofitInstance.api.getForecast(
-                    lat = lat,
-                    lon = lon,
-                    exclude = null,
-                    apiKey = key,
-                    units = Units.METRIC
-                )
-                val geocodingResponse = RetrofitInstance.api.getLocationName(
-                    lat = lat,
-                    lon = lon,
-                    limit = 1,
-                    apiKey = key
-                )
-                Timber.tag("ApiGeocoder").d("Forecast: ${response.current.temp}")
-                Timber.tag("ApiGeocoder").d("Geocoding response: ${geocodingResponse[0].name}.")
-                _uiState.value = HomeUiState(response, false, geocodingResponse[0].name)
+                val forecastDeferred = async { fetchForecast(lat, lon) }
+                val locationNameDeferred = async { fetchLocationName(lat, lon) }
+                val forecastResponse = forecastDeferred.await()
+                val locationName = locationNameDeferred.await()
+
+                withContext(Dispatchers.Main) {
+                    Timber.tag("ApiGeocoder").d("Forecast: ${forecastResponse.current.temp}")
+                    Timber.tag("ApiGeocoder").d("Geocoding response: ${locationName}.")
+                    _uiState.value = HomeUiState(forecastResponse, false, locationName)
+                }
             } catch (e: Exception) {
-                Timber.e(e,"Failed to fetch forecast")
-                _uiState.value = HomeUiState(null, false)
+                withContext(Dispatchers.Main) {
+                    Timber.e(e,"Failed to fetch forecast")
+                    _uiState.value = HomeUiState(null, false)
+                }
             }
         }
+    }
+
+    private suspend fun fetchForecast(lat: Double, lon: Double): ForecastResponse {
+        return RetrofitInstance.api.getForecast(
+            lat = lat,
+            lon = lon,
+            exclude = null,
+            apiKey = key,
+            units = Units.METRIC
+        )
+    }
+
+    private suspend fun fetchLocationName(lat: Double, lon: Double): String {
+        val geocodingResponse = RetrofitInstance.api.getLocationName(
+            lat = lat,
+            lon = lon,
+            limit = 1,
+            apiKey = key
+        )
+        return geocodingResponse[0].name
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
