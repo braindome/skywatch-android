@@ -22,8 +22,8 @@ import javax.inject.Inject
 
 data class HomeUiState(
     val forecastResponse: ForecastResponse?,
-    val loading: Boolean = false,
-    val location: String? = "Unknown location"
+    val loading: Boolean,
+    val location: String? = null
 )
 
 @HiltViewModel

@@ -1,5 +1,6 @@
 package se.braindome.skywatch.ui.home
 
+import android.R.attr.onClick
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -11,12 +12,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import se.braindome.skywatch.MainActivity
 import se.braindome.skywatch.location.LocationRepository
 import se.braindome.skywatch.ui.home.cards.MainInfoCard
@@ -36,16 +39,19 @@ fun HomeScreen(
         viewModel.updateLocation(activity = context as MainActivity)
     }
 
-    Column(
-        modifier = Modifier.fillMaxSize()
-            .padding(horizontal =16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        //SearchBar()
-        MainInfoCard(uiState)
-        HourlyColumn(uiState)
-        Button(onClick = onClick) {
-            Text(text = "Log Weather")
+    LoadingScreen(visible = uiState.value.loading)
+
+    if (!uiState.value.loading) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+                .padding(horizontal =16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            MainInfoCard(uiState)
+            HourlyColumn(uiState)
+            Button(onClick = onClick) {
+                Text(text = "Log Weather")
+            }
         }
     }
 }
