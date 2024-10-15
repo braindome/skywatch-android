@@ -15,15 +15,16 @@ object DateTimeUtils {
     private val formatter12Hour = DateTimeFormatter.ofPattern("hh:mm a")
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun convertToLocalTime(dt: Int, format24: Boolean): String {
+    fun convertToLocalTime(dt: Int, format24: Boolean): Pair<String, String> {
         val localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(dt.toLong()), ZoneId.systemDefault())
-        return if (format24) {
+        val formattedTime = if (format24) {
             localDateTime.format(formatter24Hour)
         } else {
             localDateTime.format(formatter12Hour)
         }
+        val dayOfWeek = localDateTime.dayOfWeek.name.lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }
+        return Pair(formattedTime, dayOfWeek)
     }
-
 }
 
 fun getUviDefinition(uvi: Double): String {

@@ -42,6 +42,7 @@ import se.braindome.skywatch.ui.utils.DateTimeUtils
 import se.braindome.skywatch.ui.utils.IconResourceProvider
 import se.braindome.skywatch.ui.utils.getUviDefinition
 import timber.log.Timber
+import java.time.temporal.TemporalQueries.localTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -95,14 +96,19 @@ fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
     val weatherIcon = hourlyState?.weather?.get(0)?.icon
     val sunset = weatherState.value.forecastResponse?.daily?.get(0)?.sunset
     val sunrise = weatherState.value.forecastResponse?.daily?.get(0)?.sunrise
-    val localTime = DateTimeUtils.convertToLocalTime(hourlyState?.dt ?: 0, true)
+    //val localTime = DateTimeUtils.convertToLocalTime(hourlyState?.dt ?: 0, true)
 
     // Log raw data
     Timber.tag("RawData").d("Raw Sunrise: $sunrise, Raw Sunset: $sunset")
 
     // Convert to local time
-    val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true)
-    val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true)
+    //val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true)
+    //val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true)
+    val localTimePair = DateTimeUtils.convertToLocalTime(hourlyState?.dt ?: 0, true)
+    val localTime = "${localTimePair.first}, ${localTimePair.second}"
+    val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true).first
+    val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true).first
+
 
     val backgroundColor = getBackgroundColor(
         localTimeString = localTime,
@@ -132,10 +138,7 @@ fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
             Spacer(modifier = Modifier.width(32.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = DateTimeUtils.convertToLocalTime(
-                        dt = hourlyState?.dt ?: 0,
-                        format24 = true
-                    ),
+                    text = localTime,
                     style = MaterialTheme.typography.labelLarge,
                     color = Color.White
                 )
