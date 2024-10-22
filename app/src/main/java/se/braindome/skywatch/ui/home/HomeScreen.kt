@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import se.braindome.skywatch.MainActivity
 import se.braindome.skywatch.location.LocationRepository
 import se.braindome.skywatch.ui.home.cards.MainInfoCard
+import se.braindome.skywatch.ui.home.daily.DailyRow
 import se.braindome.skywatch.ui.home.hourly.HourlyColumn
 
 
@@ -49,6 +52,7 @@ fun HomeScreen(
         ) {
             MainInfoCard(uiState)
             HourlyColumn(uiState)
+            DailyRow(uiState)
             Button(onClick = onClick) {
                 Text(text = "Log Weather")
             }

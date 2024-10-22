@@ -25,6 +25,23 @@ object DateTimeUtils {
         val dayOfWeek = localDateTime.dayOfWeek.name.lowercase().substring(0, 3).replaceFirstChar { it.uppercase() }
         return Pair(formattedTime, dayOfWeek)
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun formatDate(dt: Int): String {
+        val (formattedTime, dayOfWeek) = convertToLocalTime(dt, true)
+        val localDateTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(dt.toLong()), ZoneId.systemDefault())
+        val today = LocalDateTime.now(ZoneId.systemDefault()).toLocalDate()
+        val date = localDateTime.toLocalDate()
+
+        return when (date) {
+            today -> "Today"
+            today.plusDays(1) -> "Tomorrow"
+            else -> {
+                val monthDay = localDateTime.format(DateTimeFormatter.ofPattern("MMM dd"))
+                "$dayOfWeek, $monthDay"
+            }
+        }
+    }
 }
 
 fun getUviDefinition(uvi: Double): String {
