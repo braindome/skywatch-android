@@ -1,6 +1,7 @@
 package se.braindome.skywatch
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -12,14 +13,22 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -36,9 +45,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import se.braindome.skywatch.location.LocationRepository
+import se.braindome.skywatch.network.mockForecastResponse
 import se.braindome.skywatch.notification.NotificationHelper
 import se.braindome.skywatch.ui.home.HomeScreen
+import se.braindome.skywatch.ui.home.HomeUiState
 import se.braindome.skywatch.ui.home.HomeViewModel
+import se.braindome.skywatch.ui.home.cards.MainInfoCard
+import se.braindome.skywatch.ui.home.daily.DailyRow
+import se.braindome.skywatch.ui.home.hourly.HourlyColumn
 import se.braindome.skywatch.ui.theme.SkywatchTheme
 import timber.log.Timber
 import javax.inject.Inject

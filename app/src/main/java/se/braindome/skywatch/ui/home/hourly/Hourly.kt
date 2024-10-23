@@ -1,5 +1,6 @@
 package se.braindome.skywatch.ui.home.hourly
 
+import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -42,7 +44,6 @@ import se.braindome.skywatch.ui.utils.DateTimeUtils
 import se.braindome.skywatch.ui.utils.IconResourceProvider
 import se.braindome.skywatch.ui.utils.getUviDefinition
 import timber.log.Timber
-import java.time.temporal.TemporalQueries.localTime
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -74,16 +75,21 @@ fun HourlyColumn(weatherState: State<HomeUiState>) {
         Spacer(modifier = Modifier.height(8.dp))
         if (isExpanded) {
             LazyColumn(
-                modifier = Modifier//.padding(2.dp)
+                modifier = Modifier
+                    .height(500.dp)//.padding(2.dp)
                     .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent),
-
                 ) {
-                items(24) { index ->
-                    HourlyItem(weatherState, index)
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+                hourlyList(weatherState)
             }
         }
+    }
+}
+
+@SuppressLint("NewApi")
+fun LazyListScope.hourlyList(state: State<HomeUiState>) {
+    items(24) { index ->
+        HourlyItem(state, index)
+        Spacer(modifier = Modifier.height(8.dp))
     }
 }
 
@@ -96,14 +102,10 @@ fun HourlyItem(weatherState: State<HomeUiState>, index: Int) {
     val weatherIcon = hourlyState?.weather?.get(0)?.icon
     val sunset = weatherState.value.forecastResponse?.daily?.get(0)?.sunset
     val sunrise = weatherState.value.forecastResponse?.daily?.get(0)?.sunrise
-    //val localTime = DateTimeUtils.convertToLocalTime(hourlyState?.dt ?: 0, true)
 
     // Log raw data
     Timber.tag("RawData").d("Raw Sunrise: $sunrise, Raw Sunset: $sunset")
 
-    // Convert to local time
-    //val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true)
-    //val localSunset = DateTimeUtils.convertToLocalTime(sunset ?: 0, format24 = true)
     val localTimePair = DateTimeUtils.convertToLocalTime(hourlyState?.dt ?: 0, true)
     val localTime = "${localTimePair.first}, ${localTimePair.second}"
     val localSunrise = DateTimeUtils.convertToLocalTime(sunrise ?: 0, format24 = true).first
@@ -277,6 +279,7 @@ fun HourlyItemPreview() {
     HourlyItem(weatherState = state, index = 0)
 }
 
+/*
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
@@ -285,3 +288,5 @@ fun HourlyColumnPreview() {
     val state = vm.uiState.collectAsState()
     HourlyColumn(weatherState = state)
 }
+
+ */
