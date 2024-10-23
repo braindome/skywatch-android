@@ -134,7 +134,11 @@ fun RowItem(
     primaryText: String,
     secondaryText: String
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
         Icon(
             painter = painterResource(id = iconRes),
             contentDescription = null,
