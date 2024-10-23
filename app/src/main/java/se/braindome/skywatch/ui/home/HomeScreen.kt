@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import se.braindome.skywatch.MainActivity
 import se.braindome.skywatch.location.LocationRepository
 import se.braindome.skywatch.ui.home.cards.MainInfoCard
+import se.braindome.skywatch.ui.home.cards.PressureChart
 import se.braindome.skywatch.ui.home.daily.DailyRow
 import se.braindome.skywatch.ui.home.hourly.HourlyColumn
 
@@ -48,6 +49,7 @@ fun HomeScreen(
             item { MainInfoCard(uiState) }
             item { HourlyColumn(uiState) }
             item { DailyRow(uiState) }
+            item { PressureChart() }
 
         }
     }
