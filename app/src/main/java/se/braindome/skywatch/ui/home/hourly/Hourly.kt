@@ -76,7 +76,7 @@ fun HourlyColumn(weatherState: State<HomeUiState>) {
         if (isExpanded) {
             LazyColumn(
                 modifier = Modifier
-                    .height(500.dp)//.padding(2.dp)
+                    .height(500.dp)
                     .background(shape = RoundedCornerShape(8.dp), color = Color.Transparent),
                 ) {
                 hourlyList(weatherState)
