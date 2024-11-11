@@ -49,7 +49,7 @@ fun HomeScreen(
             item { MainInfoCard(uiState) }
             item { HourlyColumn(uiState) }
             item { DailyRow(uiState) }
-            item { PressureChart() }
+            //item { PressureChart() }
 
         }
     }
