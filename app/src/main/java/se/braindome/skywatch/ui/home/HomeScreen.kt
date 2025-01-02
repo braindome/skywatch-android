@@ -1,11 +1,13 @@
 package se.braindome.skywatch.ui.home
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +22,8 @@ import se.braindome.skywatch.MainActivity
 import se.braindome.skywatch.location.LocationRepository
 import se.braindome.skywatch.ui.home.cards.MainInfoCard
 import se.braindome.skywatch.ui.home.cards.PressureChart
+import se.braindome.skywatch.ui.home.cards.Widget
+import se.braindome.skywatch.ui.home.cards.WidgetGrid
 import se.braindome.skywatch.ui.home.daily.DailyRow
 import se.braindome.skywatch.ui.home.hourly.HourlyColumn
 
@@ -49,9 +53,12 @@ fun HomeScreen(
             item { MainInfoCard(uiState) }
             item { HourlyColumn(uiState) }
             item { DailyRow(uiState) }
-            //item { PressureChart() }
+            //item { WidgetGrid(uiState) }
+
 
         }
+
+
     }
 }
 
