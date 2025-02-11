@@ -1,9 +1,5 @@
 name: Update Dependencies
 
-on:
-  schedule:
-    - cron: '0 6 * * 1' # Runs every Monday at 6 AM UTC
-
 jobs:
   update-dependencies:
     runs-on: ubuntu-latest
