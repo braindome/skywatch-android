@@ -1,6 +1,9 @@
 name: Update Dependencies
 
 on:
+  workflow_run:
+    workflows: ["Update Dependencies"]
+    types: completed
   schedule:
     - cron: '0 6 * * 1' # Runs every Monday at 6 AM UTC
 
