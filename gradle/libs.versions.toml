@@ -1,7 +1,7 @@
 [versions]
 accompanistPermissions = "0.37.0"
 activityCompose = "1.10.0"
-agp = "8.8.0"
+agp = "8.8.1"
 coil = "2.7.0"
 composeBom = "2025.01.01"
 converterMoshi = "2.11.0"
